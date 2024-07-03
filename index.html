@@ -77,10 +77,6 @@
         .recommendation:hover {
             background-color: #f1f1f1;
         }
-        .searchimg{
-            width: 20px;
-            height: 20px;
-        }
     </style>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
 </head>
@@ -90,11 +86,11 @@
         <div class="form-container">
             <div class="form-group">
                 <input type="text" id="start" placeholder="출발지">
-                <img src="rglass.png" class="searchimg" alt="search" onclick="showRecommendations('start')">
+                <img src="magnifying_glass_icon.png" alt="search" onclick="showRecommendations('start')">
             </div>
             <div class="form-group">
                 <input type="text" id="end" placeholder="목적지">
-                <img src="rglass.png" class="searchimg" alt="search" onclick="showRecommendations('end')">
+                <img src="magnifying_glass_icon.png" alt="search" onclick="showRecommendations('end')">
             </div>
             <div id="recommendations"></div>
             <div class="form-group">
@@ -140,17 +136,20 @@
             }
         }
 
-        function showRecommendations(inputId) {
+        async function showRecommendations(inputId) {
             let input = document.getElementById(inputId).value;
             if (input.length > 2) { // 입력 길이가 2자 이상일 때 추천 장소 요청
-                fetch(`https://naveropenapi.apigw.ntruss.com/map-place/v1/search?query=${input}&coordinate=${map.getCenter().lng()},${map.getCenter().lat()}`, {
-                    headers: {
-                        'X-NCP-APIGW-API-KEY-ID': 'k30kvdvltu',
-                        'X-NCP-APIGW-API-KEY': '5h8GO4cry5fxNdETzfES6P0RLamCRWW3yZG5oCUv'
+                try {
+                    let response = await fetch(`https://naveropenapi.apigw.ntruss.com/map-place/v1/search?query=${input}&coordinate=${map.getCenter().lng()},${map.getCenter().lat()}`, {
+                        headers: {
+                            'X-NCP-APIGW-API-KEY-ID': 'k30kvdvltu',
+                            'X-NCP-APIGW-API-KEY': '5h8GO4cry5fxNdETzfES6P0RLamCRWW3yZG5oCUv'
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
                     }
-                })
-                .then(response => response.json())
-                .then(data => {
+                    let data = await response.json();
                     recommendations.innerHTML = ''; // 기존 추천 내용 제거
                     data.places.forEach(place => {
                         let recommendation = document.createElement('div');
@@ -168,7 +167,9 @@
                         recommendations.appendChild(recommendation);
                     });
                     recommendations.style.display = 'block';
-                });
+                } catch (error) {
+                    console.error('Error fetching recommendations:', error);
+                }
             } else {
                 recommendations.style.display = 'none';
             }
