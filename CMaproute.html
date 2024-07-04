@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경로 안내</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #map {
+            width: 100%;
+            height: 80vh;
+            margin-top: 20px;
+        }
+    </style>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
+</head>
+<body>
+    <h1>경로 안내</h1>
+    <div id="map"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const start = urlParams.get('start');
+            const end = urlParams.get('end');
+
+            const map = new naver.maps.Map('map', {
+                center: new naver.maps.LatLng(37.5665, 126.9780), // 서울 중심 좌표
+                zoom: 10
+            });
+
+            naver.maps.Service.geocode({ query: start }, function(status, response) {
+                if (status === naver.maps.Service.Status.ERROR) {
+                    return alert('Something Wrong!');
+                }
+
+                const startLatLng = response.v2.addresses[0].location;
+                const startMarker = new naver.maps.Marker({
+                    position: new naver.maps.LatLng(startLatLng.y, startLatLng.x),
+                    map: map,
+                    title: '출발지'
+                });
+
+                naver.maps.Service.geocode({ query: end }, function(status, response) {
+                    if (status === naver.maps.Service.Status.ERROR) {
+                        return alert('Something Wrong!');
+                    }
+
+                    const endLatLng = response.v2.addresses[0].location;
+                    const endMarker = new naver.maps.Marker({
+                        position: new naver.maps.LatLng(endLatLng.y, endLatLng.x),
+                        map: map,
+                        title: '목적지'
+                    });
+
+                    const polyline = new naver.maps.Polyline({
+                        path: [
+                            new naver.maps.LatLng(startLatLng.y, startLatLng.x),
+                            new naver.maps.LatLng(endLatLng.y, endLatLng.x)
+                        ],
+                        strokeColor: '#5347AA',
+                        strokeWeight: 5,
+                        map: map
+                    });
+
+                    map.fitBounds(new naver.maps.LatLngBounds(
+                        new naver.maps.LatLng(startLatLng.y, startLatLng.x),
+                        new naver.maps.LatLng(endLatLng.y, endLatLng.x)
+                    ));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -16,6 +16,9 @@
         }
 
         .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 20px 0;
         }
 
@@ -23,6 +26,15 @@
             padding: 10px;
             font-size: 16px;
             margin: 10px;
+        }
+
+        .voice-btn {
+            background: url('voice-icon.png') no-repeat center;
+            background-size: cover;
+            width: 40px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
         }
     </style>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
@@ -32,65 +44,49 @@
         <h1>경로 안내 서비스</h1>
         <div class="input-group">
             <label for="start">출발지:</label>
-            <select id="start">
-                <option value="서울">서울</option>
-                <option value="부산">부산</option>
-                <option value="대구">대구</option>
-                <option value="인천">인천</option>
-                <option value="광주">광주</option>
-                <option value="대전">대전</option>
-                <option value="울산">울산</option>
-                <option value="세종">세종</option>
-                <option value="경기">경기</option>
-                <option value="강원">강원</option>
-                <option value="충북">충북</option>
-                <option value="충남">충남</option>
-                <option value="전북">전북</option>
-                <option value="전남">전남</option>
-                <option value="경북">경북</option>
-                <option value="경남">경남</option>
-                <option value="제주">제주</option>
-                <option value="천안">천안</option>
-            </select>
+            <input type="text" id="start" list="cities" placeholder="출발지를 입력하세요">
+            <button class="voice-btn" id="start-voice"></button>
         </div>
         <div class="input-group">
             <label for="end">목적지:</label>
-            <select id="end">
-                <option value="서울">서울</option>
-                <option value="부산">부산</option>
-                <option value="대구">대구</option>
-                <option value="인천">인천</option>
-                <option value="광주">광주</option>
-                <option value="대전">대전</option>
-                <option value="울산">울산</option>
-                <option value="세종">세종</option>
-                <option value="경기">경기</option>
-                <option value="강원">강원</option>
-                <option value="충북">충북</option>
-                <option value="충남">충남</option>
-                <option value="전북">전북</option>
-                <option value="전남">전남</option>
-                <option value="경북">경북</option>
-                <option value="경남">경남</option>
-                <option value="제주">제주</option>
-                <option value="천안">천안</option>
-            </select>
+            <input type="text" id="end" list="cities" placeholder="목적지를 입력하세요">
+            <button class="voice-btn" id="end-voice"></button>
         </div>
         <button id="route-btn">경로 안내</button>
     </div>
+    <datalist id="cities">
+        <option value="서울">
+        <option value="부산">
+        <option value="대구">
+        <option value="인천">
+        <option value="광주">
+        <option value="대전">
+        <option value="울산">
+        <option value="세종">
+        <option value="경기">
+        <option value="강원">
+        <option value="충북">
+        <option value="충남">
+        <option value="전북">
+        <option value="전남">
+        <option value="경북">
+        <option value="경남">
+        <option value="제주">
+        <option value="천안">
+    </datalist>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
+            const startInput = document.getElementById('start');
+            const endInput = document.getElementById('end');
             const cities = ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주", "천안"];
-            const startSelect = document.getElementById('start');
-            const endSelect = document.getElementById('end');
-
+            
             const userLatitude = 36.8242; // 천안 백석대학교 위도
             const userLongitude = 127.1689; // 천안 백석대학교 경도
 
             function setDefaultCity(latitude, longitude) {
                 const distanceToCheonan = calculateDistance(latitude, longitude, userLatitude, userLongitude);
                 if (distanceToCheonan < 5) { // 5km 이내라면 천안으로 설정
-                    startSelect.value = "천안";
+                    startInput.value = "천안";
                 }
             }
 
@@ -118,24 +114,28 @@
                 setDefaultCity(userLatitude, userLongitude); // Geolocation이 지원되지 않을 때 기본 값 사용
             }
 
-            document.getElementById('route-btn').addEventListener('click', () => {
-                const start = startSelect.value;
-                const end = endSelect.value;
-
-                // 음성 입력 처리
+            function startRecognition(inputElement) {
                 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
                 recognition.lang = 'ko-KR';
 
                 recognition.onresult = (event) => {
                     const city = event.results[0][0].transcript;
                     if (cities.includes(city)) {
-                        endSelect.value = city;
+                        inputElement.value = city;
                     } else {
                         alert('인식된 도시가 목록에 없습니다.');
                     }
                 };
 
                 recognition.start();
+            }
+
+            document.getElementById('start-voice').addEventListener('click', () => startRecognition(startInput));
+            document.getElementById('end-voice').addEventListener('click', () => startRecognition(endInput));
+
+            document.getElementById('route-btn').addEventListener('click', () => {
+                const start = startInput.value;
+                const end = endInput.value;
 
                 window.location.href = `CMaproute.html?start=${start}&end=${end}`;
             });
