@@ -7,14 +7,14 @@ function findRoute() {
     var start = document.getElementById('start').value;
     var end = document.getElementById('end').value;
 
-    naver.maps.Service.geocode({address: start}, function(startResult, status) {
+    naver.maps.Service.geocode({ query: start }, function(startResult, status) {
         if (status !== naver.maps.Service.Status.OK) {
             return alert('출발지 주소를 찾을 수 없습니다.');
         }
 
         var startCoord = startResult.v2.addresses[0].location;
 
-        naver.maps.Service.geocode({address: end}, function(endResult, status) {
+        naver.maps.Service.geocode({ query: end }, function(endResult, status) {
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('도착지 주소를 찾을 수 없습니다.');
             }
