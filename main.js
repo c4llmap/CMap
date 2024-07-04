@@ -1,5 +1,5 @@
 var map = new naver.maps.Map('map', {
-    center: new naver.maps.LatLng(36.839412, 127.183765),
+    center: new naver.maps.LatLng(37.5665, 126.9780),
     zoom: 10
 });
 
@@ -7,29 +7,30 @@ function findRoute() {
     var start = document.getElementById('start').value;
     var end = document.getElementById('end').value;
 
-    naver.maps.Service.geocode({ query: start }, function(startResult, status) {
+    // Geocode start location
+    naver.maps.Service.geocode({ address: start }, function(status, startResult) {
         if (status !== naver.maps.Service.Status.OK) {
             return alert('출발지 주소를 찾을 수 없습니다.');
         }
 
-        var startCoord = startResult.v2.addresses[0].location;
+        var startCoord = new naver.maps.LatLng(startResult.v2.addresses[0].y, startResult.v2.addresses[0].x);
 
-        naver.maps.Service.geocode({ query: end }, function(endResult, status) {
+        // Geocode end location
+        naver.maps.Service.geocode({ address: end }, function(status, endResult) {
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('도착지 주소를 찾을 수 없습니다.');
             }
 
-            var endCoord = endResult.v2.addresses[0].location;
+            var endCoord = new naver.maps.LatLng(endResult.v2.addresses[0].y, endResult.v2.addresses[0].x);
 
             var directionsService = new naver.maps.DirectionsService();
             var directionsRenderer = new naver.maps.DirectionsRenderer({
-                map: map,
-                panel: document.getElementById('panel')
+                map: map
             });
 
             var request = {
-                origin: new naver.maps.LatLng(startCoord.y, startCoord.x),
-                destination: new naver.maps.LatLng(endCoord.y, endCoord.x),
+                origin: startCoord,
+                destination: endCoord,
                 travelMode: naver.maps.DirectionsService.Mode.TRANSIT
             };
 
