@@ -1,5 +1,3 @@
-console.log('main.js loaded');
-
 var map = new naver.maps.Map('map', {
     center: new naver.maps.LatLng(37.5665, 126.9780),
     zoom: 10
@@ -9,13 +7,10 @@ function findRoute() {
     var start = document.getElementById('start').value;
     var end = document.getElementById('end').value;
 
-    var geocoder = new naver.maps.Geocoder();
+    var geocoder = new naver.maps.Service();
 
     // Geocode start location
     geocoder.geocode({ address: start }, function(status, response) {
-        console.log('Start geocode status:', status);
-        console.log('Start geocode response:', response);
-
         if (status !== naver.maps.Service.Status.OK) {
             return alert('출발지 주소를 찾을 수 없습니다.');
         }
@@ -24,9 +19,6 @@ function findRoute() {
 
         // Geocode end location
         geocoder.geocode({ address: end }, function(status, response) {
-            console.log('End geocode status:', status);
-            console.log('End geocode response:', response);
-
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('도착지 주소를 찾을 수 없습니다.');
             }
@@ -39,15 +31,12 @@ function findRoute() {
             });
 
             var request = {
-                start: startCoord,
-                end: endCoord,
+                origin: startCoord,
+                destination: endCoord,
                 travelMode: naver.maps.DirectionsService.Mode.TRANSIT
             };
 
             directionsService.route(request, function(status, response) {
-                console.log('Directions status:', status);
-                console.log('Directions response:', response);
-
                 if (status === naver.maps.DirectionsService.Status.OK) {
                     directionsRenderer.setDirections(response);
                 } else {
