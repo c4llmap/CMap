@@ -7,21 +7,23 @@ function findRoute() {
     var start = document.getElementById('start').value;
     var end = document.getElementById('end').value;
 
+    var geocoder = new naver.maps.Service();
+
     // Geocode start location
-    naver.maps.Service.geocode({ address: start }, function(status, startResult) {
+    geocoder.geocode({ query: start }, function(status, response) {
         if (status !== naver.maps.Service.Status.OK) {
             return alert('출발지 주소를 찾을 수 없습니다.');
         }
 
-        var startCoord = new naver.maps.LatLng(startResult.v2.addresses[0].y, startResult.v2.addresses[0].x);
+        var startCoord = new naver.maps.LatLng(response.v2.addresses[0].y, response.v2.addresses[0].x);
 
         // Geocode end location
-        naver.maps.Service.geocode({ address: end }, function(status, endResult) {
+        geocoder.geocode({ query: end }, function(status, response) {
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('도착지 주소를 찾을 수 없습니다.');
             }
 
-            var endCoord = new naver.maps.LatLng(endResult.v2.addresses[0].y, endResult.v2.addresses[0].x);
+            var endCoord = new naver.maps.LatLng(response.v2.addresses[0].y, response.v2.addresses[0].x);
 
             var directionsService = new naver.maps.DirectionsService();
             var directionsRenderer = new naver.maps.DirectionsRenderer({
