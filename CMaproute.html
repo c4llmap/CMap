@@ -63,54 +63,18 @@
         });
 
         function getRoute(type) {
-            const start = new naver.maps.LatLng(startLatLng.lat, startLatLng.lng);
-            const end = new naver.maps.LatLng(endLatLng.lat, endLatLng.lng);
-            let option;
-
+            let transportType;
             if (type === 'walk') {
-                option = 'traoptimal';
+                transportType = 'pedestrian';
             } else if (type === 'bus') {
-                option = 'pubtransit';
+                transportType = 'bus';
             } else if (type === 'subway') {
-                option = 'pubtransit';
+                transportType = 'transit';
             }
 
-            const directionsUrl = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${start.lng},${start.lat}&goal=${end.lng},${end.lat}&option=${option}`;
-            const headers = {
-                "X-NCP-APIGW-API-KEY-ID": "k30kvdvltu",
-                "X-NCP-APIGW-API-KEY": "5h8GO4cry5fxNdETzfES6P0RLamCRWW3yZG5oCUv"
-            };
+            const directionsUrl = `https://map.naver.com/v5/directions/${transportType}?start=${startLatLng.lng},${startLatLng.lat},출발지&goal=${endLatLng.lng},${endLatLng.lat},도착지&crs=EPSG:4326&mode=fastest`;
 
-            fetch(directionsUrl, { headers })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.code === 0) {
-                        const path = data.route.traoptimal[0].path.map(point => new naver.maps.LatLng(point[1], point[0]));
-
-                        // 기존 경로 삭제
-                        if (window.polyline) {
-                            window.polyline.setMap(null);
-                        }
-
-                        window.polyline = new naver.maps.Polyline({
-                            path: path,
-                            strokeColor: '#5347AA',
-                            strokeWeight: 5,
-                            map: map
-                        });
-
-                        map.fitBounds(new naver.maps.LatLngBounds(
-                            new naver.maps.LatLng(startLatLng.lat, startLatLng.lng),
-                            new naver.maps.LatLng(endLatLng.lat, endLatLng.lng)
-                        ));
-                    } else {
-                        alert('경로를 찾을 수 없습니다.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('경로 검색 중 오류가 발생했습니다.');
-                });
+            window.open(directionsUrl, '_blank');
         }
     </script>
 </body>
