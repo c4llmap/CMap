@@ -77,6 +77,10 @@
         .recommendation:hover {
             background-color: #f1f1f1;
         }
+					.searchimg{
+								width:20px;
+								height:20px;
+}
     </style>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
 </head>
@@ -86,11 +90,11 @@
         <div class="form-container">
             <div class="form-group">
                 <input type="text" id="start" placeholder="출발지">
-                <img src="rglass.png" alt="search" onclick="showRecommendations('start')">
+                <img src="rglass.png" class='searchimg' alt="search" onclick="showRecommendations('start')">
             </div>
             <div class="form-group">
                 <input type="text" id="end" placeholder="목적지">
-                <img src="rglass.png" alt="search" onclick="showRecommendations('end')">
+                <img src="rglass.png" class='searchimg' alt="search" onclick="showRecommendations('end')">
             </div>
             <div id="recommendations"></div>
             <div class="form-group">
