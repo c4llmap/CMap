@@ -11,7 +11,7 @@ function findRoute() {
 
     // Geocode start location
     geocoder.geocode({ query: start }, function(status, response) {
-        if (status !== naver.maps.Service.Status.OK) {
+        if (status === naver.maps.Service.Status.ERROR) {
             return alert('출발지 주소를 찾을 수 없습니다.');
         }
 
@@ -19,7 +19,7 @@ function findRoute() {
 
         // Geocode end location
         geocoder.geocode({ query: end }, function(status, response) {
-            if (status !== naver.maps.Service.Status.OK) {
+            if (status === naver.maps.Service.Status.ERROR) {
                 return alert('도착지 주소를 찾을 수 없습니다.');
             }
 
@@ -36,7 +36,7 @@ function findRoute() {
                 travelMode: naver.maps.DirectionsService.Mode.TRANSIT
             };
 
-            directionsService.route(request, function(response, status) {
+            directionsService.route(request, function(status, response) {
                 if (status === naver.maps.DirectionsService.Status.OK) {
                     directionsRenderer.setDirections(response);
                 } else {
