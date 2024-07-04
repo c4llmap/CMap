@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="콜맵_fabicon.ico">
+    <title>Document</title>
+    <style>
+        html,body{
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .grid{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .grid_box{
+            width: 100px;
+            height: 30px;
+            border: 0px solid;
+            border-radius: 10px;
+            background-color: dodgerblue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid_toggle{
+            width: auto;
+            display: grid;
+            grid-template-columns: repeat(2, 2fr);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .box_intro{
+            width: 90%;
+            height: 45px;
+            border: 0px solid;
+            border-radius: 10px;
+            background-color: dodgerblue;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            float: center;
+            margin-left: 4.5%;
+        }
+
+        /* 토글 스위치 스타일 */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+          }
+          
+          .toggle-switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+          }
+          
+          .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+          }
+          
+          .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+          }
+          
+          input:checked + .slider {
+            background-color: #2196F3;
+          }
+          
+          input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+          }
+          
+          input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+          }
+          
+          /* On & Off text */
+          .onoff {
+            color: #fff;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            font-size: 10px;
+          }
+          
+          /* 꺼짐과 켜짐 상태 표시 */
+          .status {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            font-size: 10px;
+            color: #666;
+          }
+
+          input:checked ~ .status::after {
+            content: "켜짐";
+          }
+
+          input:not(:checked) ~ .status::after {
+            content: "꺼짐";
+          }
+
+          input:checked ~ .onoff {
+            display: none;
+          }
+
+          input:not(:checked) ~ .onoff {
+            display: inline;
+          }
+    </style>
+</head>
+<body>
+    <div style="display: grid; grid-template-columns: repeat(2, 2fr); justify-content: left; align-items: left; text-align: left; float: left;">
+        <img src="options_setting.png" style="width: 40px; height: 40px; margin-top: 25%; margin-left: 5%;">
+        <h4 style="font-weight: bold; margin-left: 5%; font-size: 1rem;">설정</h4>
+    </div>
+    <hr style="border:1px solid #000;  width: 100%;">
+    <div class="grid">
+        <h4 style="font-size: 0.9rem;" onclick="window.open('small_test3.html')"><b>가</b></h4>
+        <h4 style="font-size: 1.2rem;" onclick="window.open('middle_test3.html')"><b>가</b></h4>
+        <h4 style="font-size: 1.5rem;" onclick="window.open('large_test3.html')"><b>가</b></h4>
+    </div>
+
+    <div class="grid" style="margin-left: 4.5%;">
+        <div class="grid_box" onclick="window.open('small_test3.html')"><h4>중간</h4></div>
+        <div class="grid_box" onclick="window.open('middle_test3.html')"><h4>크게</h4></div>
+        <div class="grid_box" onclick="window.open('large_test3.html')"><h4>크게크게</h4></div>
+    </div>
+
+    <hr style="width: 90%; border: 1px solid dodgerblue; font-size: 2px; margin-top: 40px; margin-bottom: 10px;">
+
+    <div class="grid_toggle" style="margin-left: 12%;">
+        <h4 style="margin-top: 35px;">음성 켜기/끄기</h4>
+    <!-- 토글 스위치 -->
+    <div class="toggle-switch" style="margin-top: 10px;">
+        <input type="checkbox" id="toggle">
+        <label class="slider" for="toggle"></label>
+        <span class="onoff">음성</span>
+        <span class="status"></span>
+    </div>
+    </div>
+
+    <hr style="width: 90%; border: 1px solid dodgerblue; font-size: 2px; margin-top: 25px; margin-bottom: 10px;">
+
+    <h4>콜맵 사용이 어렵다면? <br> <b style="font-size: 1.2rem; font-weight: bold; color: dodgerblue;">사용설명</b>클릭!</h4>
+    <div class="box_intro"><h4 style="padding-top: 3.5%;" onclick="window.open('contrunction.html')">사용설명</h4></div>
+</body>
+</html>

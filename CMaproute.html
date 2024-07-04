@@ -33,11 +33,11 @@
             });
 
             naver.maps.Service.geocode({ query: start }, function(status, response) {
-                if (status === naver.maps.Service.Status.ERROR) {
-                    return alert('Something Wrong!');
+                if (status !== naver.maps.Service.Status.OK) {
+                    return alert('출발지 지오코딩에 문제가 발생했습니다.');
                 }
 
-                const startLatLng = response.v2.addresses[0].location;
+                const startLatLng = response.v2.addresses[0];
                 const startMarker = new naver.maps.Marker({
                     position: new naver.maps.LatLng(startLatLng.y, startLatLng.x),
                     map: map,
@@ -45,11 +45,11 @@
                 });
 
                 naver.maps.Service.geocode({ query: end }, function(status, response) {
-                    if (status === naver.maps.Service.Status.ERROR) {
-                        return alert('Something Wrong!');
+                    if (status !== naver.maps.Service.Status.OK) {
+                        return alert('목적지 지오코딩에 문제가 발생했습니다.');
                     }
 
-                    const endLatLng = response.v2.addresses[0].location;
+                    const endLatLng = response.v2.addresses[0];
                     const endMarker = new naver.maps.Marker({
                         position: new naver.maps.LatLng(endLatLng.y, endLatLng.x),
                         map: map,
