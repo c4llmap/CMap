@@ -114,16 +114,17 @@
         }
     </style>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
         <img src="base.png" style="margin-top: 10px; border: 0xp solid; border-radius: 15px; margin-bottom: -20px;" alt="">
         <div class="input-group" style="margin-bottom: -30px;">
-            <input type="text" id="start" list="cities" placeholder="출발지를 입력하세요">
+            <input type="text" id="start" placeholder="출발지를 입력하세요">
             <button class="voice-btn" id="start-voice"><img src="rglass.png" class="voiceIMG" alt=""></button>
         </div>
         <div class="input-group">
-            <input type="text" id="end" list="cities" placeholder="목적지를 입력하세요">
+            <input type="text" id="end" placeholder="목적지를 입력하세요">
             <button class="voice-btn" id="end-voice"><img src="rglass.png" class="voiceIMG" alt=""></button>
         </div>
         <button id="route-btn" onclick="submitForm()"><img class="routeIMG" src="walk.png" alt="">경로 안내</button>
@@ -135,9 +136,12 @@
         <div class="button" onclick="window.open('callmap_option.html')"><img class="gridIMG" src="options_setting.png" alt=""><h3>설정</h3></div>
     </div>
     <script>
+        const startInput = document.getElementById('start');
+        const endInput = document.getElementById('end');
+
         function submitForm() {
-            const start = document.getElementById('start').value;
-            const end = document.getElementById('end').value;
+            const start = startInput.value;
+            const end = endInput.value;
             window.location.href = `CMaproute2.html?start=${start}&end=${end}`;
         }
 
@@ -150,6 +154,27 @@
             const inputElement = document.getElementById(inputId);
             // 예시 코드: 음성 인식 결과를 inputElement.value에 설정
         }
+
+        function initializeAutocomplete(inputElement) {
+            const autocomplete = new naver.maps.places.Autocomplete(inputElement, {
+                // 옵션 설정 (예: 위치 제한, 자동완성 결과 갯수 등)
+                bounds: naver.maps.LatLngBounds(naver.maps.LatLng(33.0, 124.0), naver.maps.LatLng(39.0, 132.0)), // 예시: 한국 내 위치로 제한
+                strictBounds: true,
+                componentRestrictions: { country: 'kr' },
+            });
+
+            naver.maps.Event.addListener(autocomplete, 'place_changed', function () {
+                const place = autocomplete.getPlace();
+                if (place) {
+                    inputElement.value = place.name;
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            initializeAutocomplete(startInput);
+            initializeAutocomplete(endInput);
+        });
     </script>
 </body>
 </html>
