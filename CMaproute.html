@@ -143,20 +143,16 @@
 
         function getRoute(type) {
             let transportType;
-            let option;
 
             if (type === 'walk') {
-                transportType = 'pedestrian';
-                option = 'walk';
+                transportType = 'walk';
             } else if (type === 'bus') {
                 transportType = 'bus';
-                option = 'transit';
             } else if (type === 'subway') {
-                transportType = 'transit';
-                option = 'subway';
+                transportType = 'subway';
             }
 
-            const directionsUrl = `https://map.naver.com/v5/directions/${transportType}?start=${startLatLng.lng},${startLatLng.lat},출발지&goal=${endLatLng.lng},${endLatLng.lat},도착지&crs=EPSG:4326&mode=fastest&option=${option}`;
+            const directionsUrl = `https://map.naver.com/v5/directions/${transportType}?start=${startLatLng.lng},${startLatLng.lat},출발지&goal=${endLatLng.lng},${endLatLng.lat},도착지&crs=EPSG:4326&mode=fastest&startText=백석대학교&goalText=천안역`;
 
             window.open(directionsUrl, '_blank');
         }
