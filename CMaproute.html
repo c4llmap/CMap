@@ -70,7 +70,7 @@
             padding-bottom: 10px;
         }
     </style>
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_NAVER_CLIENT_ID"></script>
 </head>
 <body>
     <img src="base.png" style="margin-top: 10px; border: 0xp solid; border-radius: 15px; margin-bottom: -20px;" alt="">
@@ -143,16 +143,20 @@
 
         function getRoute(type) {
             let transportType;
+            let mode;
 
             if (type === 'walk') {
-                transportType = 'walk';
+                transportType = 'pedestrian';
+                mode = 'walk';
             } else if (type === 'bus') {
                 transportType = 'bus';
+                mode = 'transit';
             } else if (type === 'subway') {
-                transportType = 'subway';
+                transportType = 'transit';
+                mode = 'subway';
             }
 
-            const directionsUrl = `https://map.naver.com/v5/directions/${transportType}?start=${startLatLng.lng},${startLatLng.lat},출발지&goal=${endLatLng.lng},${endLatLng.lat},도착지&crs=EPSG:4326&mode=fastest&startText=백석대학교&goalText=천안역`;
+            const directionsUrl = `https://map.naver.com/v5/directions/${mode}?start=${startLatLng.lng},${startLatLng.lat},백석대학교&goal=${endLatLng.lng},${endLatLng.lat},천안역&crs=EPSG:4326&mode=fastest`;
 
             window.open(directionsUrl, '_blank');
         }
