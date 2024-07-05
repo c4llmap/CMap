@@ -42,7 +42,7 @@
             border-radius: 15px;
         }
 
-        .group{
+        .group {
             border-radius: 15px;
             width: auto;
             background-color: rgba(0, 0, 0, 0.2);
@@ -59,7 +59,7 @@
             background-color: dodgerblue;
         }
 
-        #taxi-info{
+        #taxi-info {
             font-weight: bold;
             font-size: 1rem;
             background-color: dodgerblue;
@@ -128,9 +128,9 @@
             const R = 6371; // 지구의 반경 (km)
             const dLat = deg2rad(lat2 - lat1);
             const dLon = deg2rad(lon2 - lon1);
-            const a = 
+            const a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             const distance = R * c; // 거리 (km)
@@ -142,20 +142,11 @@
         }
 
         function getRoute(type) {
-            let option;
+            const start = encodeURIComponent('백석대학교');
+            const goal = encodeURIComponent('천안역');
+            const mode = type === 'walk' ? '도보' : type === 'bus' ? '버스' : '지하철';
 
-            if (type === 'walk') {
-                option = 'traoptimal';
-            } else if (type === 'bus') {
-                option = 'pubtransit';
-            } else if (type === 'subway') {
-                option = 'pubtransit';
-            }
-
-            const start = `${startLatLng.lng},${startLatLng.lat}`;
-            const goal = `${endLatLng.lng},${endLatLng.lat}`;
-
-            const directionsUrl = `https://map.naver.com/v5/directions/${option}?start=${start}&goal=${goal}&startText=백석대학교&goalText=천안역`;
+            const directionsUrl = `https://map.naver.com/v5/directions/${mode}?start=${startLatLng.lng},${startLatLng.lat},${start}&goal=${endLatLng.lng},${endLatLng.lat},${goal}&crs=EPSG:4326&mode=fastest`;
 
             window.open(directionsUrl, '_blank');
         }
