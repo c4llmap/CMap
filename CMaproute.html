@@ -143,15 +143,20 @@
 
         function getRoute(type) {
             let transportType;
+            let option;
+
             if (type === 'walk') {
                 transportType = 'pedestrian';
+                option = 'walk';
             } else if (type === 'bus') {
                 transportType = 'bus';
+                option = 'transit';
             } else if (type === 'subway') {
                 transportType = 'transit';
+                option = 'subway';
             }
 
-            const directionsUrl = `https://map.naver.com/v5/directions/${transportType}?start=${startLatLng.lng},${startLatLng.lat},출발지&goal=${endLatLng.lng},${endLatLng.lat},도착지&crs=EPSG:4326&mode=fastest`;
+            const directionsUrl = `https://map.naver.com/v5/directions/${transportType}?start=${startLatLng.lng},${startLatLng.lat},출발지&goal=${endLatLng.lng},${endLatLng.lat},도착지&crs=EPSG:4326&mode=fastest&option=${option}`;
 
             window.open(directionsUrl, '_blank');
         }
