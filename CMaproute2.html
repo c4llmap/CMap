@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="콜맵_fabicon.ico">
+    <title>CallMapRoute</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: auto;
+        }
+
+        #map {
+            width: 100%;
+            height: 60vh;
+            margin-top: 20px;
+            border: 0px solid;
+            border-radius: 15px;
+            box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
+            -webkit-box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
+            -moz-box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
+            margin-top: 30px;
+        }
+
+        .button-group {
+            margin: 20px;
+        }
+
+        .route-button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            background-color: dodgerblue;
+            border: 0px;
+            border-radius: 15px;
+        }
+
+        .group {
+            border-radius: 15px;
+            width: auto;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .info-group {
+            margin-top: 20px;
+            display: inline-block;
+            border: 0px solid;
+            border-radius: 15px;
+            box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
+            -webkit-box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
+            -moz-box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
+            background-color: dodgerblue;
+        }
+
+        #taxi-info {
+            font-weight: bold;
+            font-size: 1rem;
+            background-color: dodgerblue;
+            width: auto;
+            padding-top: 10px;
+            padding-right: 10px;
+            padding-left: 10px;
+            padding-bottom: 10px;
+        }
+    </style>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
+</head>
+<body>
+    <img src="base.png" style="margin-top: 10px; border: 0xp solid; border-radius: 15px; margin-bottom: -20px;" alt="">
+    <div id="map"></div>
+    <div class="button-group">
+        <button class="route-button" onclick="getRoute('walk')">도보</button>
+        <button class="route-button" onclick="getRoute('bus')">버스</button>
+        <button class="route-button" onclick="getRoute('subway')">지하철</button>
+
+        <h3 class="group" id="route-summary"></h3>
+    </div>
+    <div class="info-group">
+        <img src="taxi.png" style="width: 30%; height: 30%; margin-top: 15px; padding-left: 15px; padding-right: 15px;" alt="">
+        <p id="taxi-info"></p>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const start = urlParams.get('start');
+        const end = urlParams.get('end');
+
+        document.getElementById('route-summary').innerText = `${start} => ${end}`;
+
+        function calculateTaxiFare() {
+            const distance = getDistanceFromLatLonInKm(startLatLng.lat, startLatLng.lng, endLatLng.lat, endLatLng.lng);
+            const baseFare = 3800; // 기본 요금 (미터 당 요금은 지역에 따라 다를 수 있음)
+            const perKmFare = 100; // 킬로미터 당 요금 (예시 값)
+
+            const fare = baseFare + (distance * perKmFare);
+            const taxiInfo = `거리: ${distance.toFixed(2)} km, 예상 택시 요금: ${fare.toFixed(0)} 원`;
+
+            document.getElementById('taxi-info').innerText = taxiInfo;
+        }
+
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+            const R = 6371; // 지구의 반경 (km)
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // 거리 (km)
+            return distance;
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function getRoute(mode) {
+            // mode에 따른 경로를 가져오는 로직 구현
+        }
+
+        // 출발지와 목적지의 좌표를 얻는 로직 추가
+        const startLatLng = { lat: 36.7665, lng: 127.2820 }; // 예시 좌표
+        const endLatLng = { lat: 36.8090, lng: 127.1470 }; // 예시 좌표
+
+        calculateTaxiFare();
+    </script>
+</body>
+</html>

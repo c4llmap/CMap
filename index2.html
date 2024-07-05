@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="콜맵_fabicon.ico">
+    <title>CMap</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: auto;
+        }
+
+        .container {
+            width: auto;
+            margin: 0 auto;
+            text-align: center;
+            border: 0px solid;
+            border-radius: 15px;
+            box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
+            -webkit-box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
+            -moz-box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        .voice-btn {
+            background-size: cover;
+            width: 40px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+            border:0px solid;
+            border-radius: 50%;
+            background-color: dodgerblue;
+        }
+        .voiceIMG{
+            width: 20px;
+            height: 20px;
+        }
+        .routeIMG{
+            width: auto;
+            height: 30px;
+            align-items: center;
+            justify-content: center;
+            display: block;
+            margin-left: 45%;
+        }
+
+        #route-btn{
+            width: 15%;
+            height: 5%;
+            border: 0px solid;
+            border-radius: 15px;
+            background-color: dodgerblue;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .grid{
+            display: grid;
+            grid-template-columns: repeat(3, 3fr);
+            grid-gap: 5%;
+            margin-top: 20px;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+        }
+        .gridIMG{
+            width: 50px;
+            height: 50px;
+            border: 0px solid;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .button{
+            border: 0px solid;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            background-color: dodgerblue;
+            font-weight: bold;
+            font-size: 1rem;
+            width: auto;
+        }
+
+        @media screen and (max-width : 800px){
+            #route-btn{
+                width: 35%;
+                font-size: 1.1rem;
+            }
+
+            .routeIMG{
+                margin-left: 30%;
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
+</head>
+<body>
+    <div class="container">
+        <img src="base.png" style="margin-top: 10px; border: 0xp solid; border-radius: 15px; margin-bottom: -20px;" alt="">
+        <div class="input-group" style="margin-bottom: -30px;">
+            <input type="text" id="start" list="cities" placeholder="출발지를 입력하세요">
+            <button class="voice-btn" id="start-voice"><img src="rglass.png" class="voiceIMG" alt=""></button>
+        </div>
+        <div class="input-group">
+            <input type="text" id="end" list="cities" placeholder="목적지를 입력하세요">
+            <button class="voice-btn" id="end-voice"><img src="rglass.png" class="voiceIMG" alt=""></button>
+        </div>
+        <button id="route-btn" onclick="submitForm()"><img class="routeIMG" src="walk.png" alt="">경로 안내</button>
+    </div>
+
+    <div class="grid">
+        <div class="button" onclick="window.open('')"><img class="gridIMG" src="robot.jpg" alt=""><h3>새싹이</h3></div>
+        <div class="button" onclick="window.open('bus_info.html')"><img class="gridIMG" src="bus_stop.png" alt=""><h3>버스정류장</h3></div>
+        <div class="button" onclick="window.open('callmap_option.html')"><img class="gridIMG" src="options_setting.png" alt=""><h3>설정</h3></div>
+    </div>
+    <script>
+        function submitForm() {
+            const start = document.getElementById('start').value;
+            const end = document.getElementById('end').value;
+            window.location.href = `CMaproute2.html?start=${start}&end=${end}`;
+        }
+
+        document.getElementById('start-voice').addEventListener('click', () => startRecognition('start'));
+        document.getElementById('end-voice').addEventListener('click', () => startRecognition('end'));
+
+        function startRecognition(inputId) {
+            // 음성 인식 로직 (예: Web Speech API 사용)
+            // 인식된 텍스트를 해당 input 요소에 설정
+            const inputElement = document.getElementById(inputId);
+            // 예시 코드: 음성 인식 결과를 inputElement.value에 설정
+        }
+    </script>
+</body>
+</html>
