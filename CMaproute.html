@@ -156,7 +156,7 @@
             const goal = encodeURIComponent('천안역');
             const mode = type === 'walk' ? '도보' : type === 'bus' ? '버스' : '지하철';
 
-            const directionsUrl = `https://map.naver.com/v5/directions/${mode}?start=${startLatLng.lng},${startLatLng.lat},${start}&goal=${endLatLng.lng},${endLatLng.lat},${goal}&crs=EPSG:4326&mode=fastest`;
+            const directionsUrl = `https://map.naver.com/v5/directions/${mode}?start=${startLatLng.lng},${startLatLng.lat},${start}&goal=${endLatLng.lng},${endLatLng.lat},${goal}&crs=EPSG:4326`;
 
             document.getElementById('directionsIframe').src = directionsUrl;
         }
