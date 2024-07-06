@@ -154,7 +154,7 @@
         function showRoute() {
             const start = encodeURIComponent('백석대학교');
             const goal = encodeURIComponent('천안역');
-            const directionsUrl = `https://m.map.naver.com/appLink.naver?start=${startLatLng.lng},${startLatLng.lat},${start}&goal=${endLatLng.lng},${endLatLng.lat},${goal}&crs=EPSG:4326&app=Y&appmarket=N`;
+            const directionsUrl = `https://map.naver.com/v5/directions/-/141.460562,37.5550459,${start}/${goal}/-/-/-`;
 
             document.getElementById('directionsIframe').src = directionsUrl;
         }
