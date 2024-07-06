@@ -112,6 +112,23 @@
                 height: 45px;
             }
         }
+
+        .autocomplete-suggestions {
+            border: 1px solid #ddd;
+            background: #fff;
+            overflow: auto;
+            position: absolute;
+            z-index: 1000;
+        }
+
+        .autocomplete-suggestion {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .autocomplete-suggestion:hover {
+            background: #f0f0f0;
+        }
     </style>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -121,10 +138,12 @@
         <img src="base.png" style="margin-top: 10px; border: 0xp solid; border-radius: 15px; margin-bottom: -20px;" alt="">
         <div class="input-group" style="margin-bottom: -30px;">
             <input type="text" id="start" placeholder="출발지를 입력하세요">
+            <div id="start-suggestions" class="autocomplete-suggestions"></div>
             <button class="voice-btn" id="start-voice"><img src="rglass.png" class="voiceIMG" alt=""></button>
         </div>
         <div class="input-group">
             <input type="text" id="end" placeholder="목적지를 입력하세요">
+            <div id="end-suggestions" class="autocomplete-suggestions"></div>
             <button class="voice-btn" id="end-voice"><img src="rglass.png" class="voiceIMG" alt=""></button>
         </div>
         <button id="route-btn" onclick="submitForm()"><img class="routeIMG" src="walk.png" alt="">경로 안내</button>
@@ -138,6 +157,8 @@
     <script>
         const startInput = document.getElementById('start');
         const endInput = document.getElementById('end');
+        const startSuggestions = document.getElementById('start-suggestions');
+        const endSuggestions = document.getElementById('end-suggestions');
 
         function submitForm() {
             const start = startInput.value;
@@ -149,32 +170,57 @@
         document.getElementById('end-voice').addEventListener('click', () => startRecognition('end'));
 
         function startRecognition(inputId) {
-            // 음성 인식 로직 (예: Web Speech API 사용)
-            // 인식된 텍스트를 해당 input 요소에 설정
             const inputElement = document.getElementById(inputId);
-            // 예시 코드: 음성 인식 결과를 inputElement.value에 설정
         }
 
-        function initializeAutocomplete(inputElement) {
-            const autocomplete = new naver.maps.places.Autocomplete(inputElement, {
-                // 옵션 설정 (예: 위치 제한, 자동완성 결과 갯수 등)
-                bounds: naver.maps.LatLngBounds(naver.maps.LatLng(33.0, 124.0), naver.maps.LatLng(39.0, 132.0)), // 예시: 한국 내 위치로 제한
-                strictBounds: true,
-                componentRestrictions: { country: 'kr' },
-            });
-
-            naver.maps.Event.addListener(autocomplete, 'place_changed', function () {
-                const place = autocomplete.getPlace();
-                if (place) {
-                    inputElement.value = place.name;
+        function fetchPlaces(query, callback) {
+            $.ajax({
+                url: `https://naveropenapi.apigw.ntruss.com/map-place/v1/search?query=${query}&coordinate=127.1054328,37.3595963`,
+                type: 'GET',
+                headers: {
+                    'X-NCP-APIGW-API-KEY-ID': 'k30kvdvltu',
+                    'X-NCP-APIGW-API-KEY': '5h8GO4cry5fxNdETzfES6P0RLamCRWW3yZG5oCUv'
+                },
+                success: function(data) {
+                    if (data.places) {
+                        callback(data.places);
+                    } else {
+                        callback([]);
+                    }
+                },
+                error: function() {
+                    callback([]);
                 }
             });
         }
 
-        $(document).ready(function() {
-            initializeAutocomplete(startInput);
-            initializeAutocomplete(endInput);
-        });
+        function showSuggestions(inputElement, suggestionsElement, places) {
+            suggestionsElement.innerHTML = '';
+            places.forEach(place => {
+                const div = document.createElement('div');
+                div.classList.add('autocomplete-suggestion');
+                div.textContent = place.name;
+                div.addEventListener('click', () => {
+                    inputElement.value = place.name;
+                    suggestionsElement.innerHTML = '';
+                });
+                suggestionsElement.appendChild(div);
+            });
+        }
+
+        function handleInput(event, inputElement, suggestionsElement) {
+            const query = inputElement.value;
+            if (query.length > 2) {
+                fetchPlaces(query, (places) => {
+                    showSuggestions(inputElement, suggestionsElement, places);
+                });
+            } else {
+                suggestionsElement.innerHTML = '';
+            }
+        }
+
+        startInput.addEventListener('input', (event) => handleInput(event, startInput, startSuggestions));
+        endInput.addEventListener('input', (event) => handleInput(event, endInput, endSuggestions));
     </script>
 </body>
 </html>
