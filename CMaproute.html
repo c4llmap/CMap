@@ -69,15 +69,6 @@
             padding-left: 10px;
             padding-bottom: 10px;
         }
-
-        iframe {
-            width: 100%;
-            height: 60vh;
-            border: 0px solid;
-            border-radius: 15px;
-            box-shadow: 1px 2px 5px 7px rgba(181,171,171,0.75);
-            margin-top: 30px;
-        }
     </style>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
 </head>
@@ -85,9 +76,9 @@
     <img src="base.png" style="margin-top: 10px; border: 0xp solid; border-radius: 15px; margin-bottom: -20px;" alt="">
     <div id="map"></div>
     <div class="button-group">
-        <button class="route-button" onclick="showRoute()">도보</button>
-        <button class="route-button" onclick="showRoute()">버스</button>
-        <button class="route-button" onclick="showRoute()">지하철</button>
+        <button class="route-button" onclick="openRoute()">도보</button>
+        <button class="route-button" onclick="openRoute()">버스</button>
+        <button class="route-button" onclick="openRoute()">지하철</button>
 
         <h3 class="group">백석대학교 => 천안역</h3>
     </div>
@@ -95,7 +86,6 @@
         <img src="taxi.png" style="width: 30%; height: 30%; margin-top: 15px; padding-left: 15px; padding-right: 15px;" alt="">
         <p id="taxi-info"></p>
     </div>
-    <iframe id="directionsIframe" src=""></iframe>
     <script>
         const startLatLng = { lat: 36.8242, lng: 127.1689 }; // 백석대학교
         const endLatLng = { lat: 36.8108, lng: 127.1470 }; // 천안역
@@ -137,7 +127,7 @@
         function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
             const R = 6371; // 지구의 반경 (km)
             const dLat = deg2rad(lat2 - lat1);
-            const dLon = deg2rad(lon2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
             const a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
@@ -151,12 +141,12 @@
             return deg * (Math.PI / 180);
         }
 
-        function showRoute() {
+        function openRoute() {
             const start = encodeURIComponent('백석대학교');
             const goal = encodeURIComponent('천안역');
-            const directionsUrl = `https://map.naver.com/v5/directions/-/141.460562,37.5550459,${start}/${goal}/-/-/-`;
+            const directionsUrl = `https://map.naver.com/v5/directions/-/${startLatLng.lng},${startLatLng.lat},${start}/${endLatLng.lng},${endLatLng.lat},${goal}`;
 
-            document.getElementById('directionsIframe').src = directionsUrl;
+            window.open(directionsUrl, '_blank');
         }
     </script>
 </body>
