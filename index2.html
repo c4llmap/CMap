@@ -182,13 +182,15 @@
                     'X-NCP-APIGW-API-KEY': '5h8GO4cry5fxNdETzfES6P0RLamCRWW3yZG5oCUv'
                 },
                 success: function(data) {
+                    console.log(data);  // 응답 데이터 확인을 위해 로그 추가
                     if (data.places) {
                         callback(data.places);
                     } else {
                         callback([]);
                     }
                 },
-                error: function() {
+                error: function(error) {
+                    console.log(error);  // 에러 로그 추가
                     callback([]);
                 }
             });
