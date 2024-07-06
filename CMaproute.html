@@ -79,15 +79,14 @@
             margin-top: 30px;
         }
     </style>
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
 </head>
 <body>
     <img src="base.png" style="margin-top: 10px; border: 0xp solid; border-radius: 15px; margin-bottom: -20px;" alt="">
     <div id="map"></div>
     <div class="button-group">
-        <button class="route-button" onclick="getRoute('walk')">도보</button>
-        <button class="route-button" onclick="getRoute('bus')">버스</button>
-        <button class="route-button" onclick="getRoute('subway')">지하철</button>
+        <button class="route-button" onclick="showRoute()">도보</button>
+        <button class="route-button" onclick="showRoute()">버스</button>
+        <button class="route-button" onclick="showRoute()">지하철</button>
 
         <h3 class="group">백석대학교 => 천안역</h3>
     </div>
@@ -137,7 +136,7 @@
         function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
             const R = 6371; // 지구의 반경 (km)
             const dLat = deg2rad(lat2 - lat1);
-            const dLon = deg2rad(lon2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
             const a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
@@ -151,12 +150,10 @@
             return deg * (Math.PI / 180);
         }
 
-        function getRoute(type) {
+        function showRoute() {
             const start = encodeURIComponent('백석대학교');
             const goal = encodeURIComponent('천안역');
-            const mode = type === 'walk' ? 'WALKING' : type === 'bus' ? 'TRANSIT' : 'SUBWAY';
-
-            const directionsUrl = `https://map.naver.com/v5/directions/${mode}?start=${startLatLng.lng},${startLatLng.lat},${start}&goal=${endLatLng.lng},${endLatLng.lat},${goal}&crs=EPSG:4326`;
+            const directionsUrl = `https://map.naver.com/v5/directions?start=${startLatLng.lng},${startLatLng.lat},${start}&goal=${endLatLng.lng},${endLatLng.lat},${goal}&crs=EPSG:4326`;
 
             document.getElementById('directionsIframe').src = directionsUrl;
         }
