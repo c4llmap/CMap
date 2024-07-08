@@ -98,6 +98,83 @@
             font-weight: bold;
             font-size: 1rem;
             width: auto;
+            position: relative;
+        }
+
+        /*robot container*/
+        #robot-container {
+            position: relative;
+            width: 75px;
+            height: 75px;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        #robot-image {
+            width: 100%;
+            height: 100%;
+            margin-top: 10px;
+            border:0px solid;
+            border-radius: 15px;
+        }
+
+        .speech-bubble {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 11.5px;
+            padding: 10px;
+            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.9);
+            max-width: 200px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .show {
+            visibility: visible;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .alert-container {
+            display: none;
+            margin-top: 20px;
+            border: 0px solid;
+            border-radius: 15px;
+            background-color: #ffcccb;
+            font-weight: bold;
+            font-size: 1rem;
+            width: auto;
+            padding: 20px;
+        }
+
+        .alert-container button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+            background-color: dodgerblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .audio-button {
+            border-radius: 15px;
+            background-color: dodgerblue;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
         }
 
         @media screen and (max-width : 800px){
@@ -119,111 +196,126 @@
     <div class="container">
         <img src="base.png" style="margin-top: 10px; border: 0xp solid; border-radius: 15px; margin-bottom: -20px;" alt="">
         <div class="input-group" style="margin-bottom: -30px;">
-            <!--label for="start">출발지:</label-->
-            <input type="text" id="start" list="cities" placeholder="백석대학교">
+            <input type="text" id="start" placeholder="출발지를 입력하세요">
             <button class="voice-btn" id="start-voice"><img src="rglass.png" class="voiceIMG" alt=""></button>
         </div>
         <div class="input-group">
-            <!--label for="end">목적지:</label-->
-            <input type="text" id="end" list="cities" placeholder="천안역">
+            <input type="text" id="end" placeholder="목적지를 입력하세요">
             <button class="voice-btn" id="end-voice"><img src="rglass.png" class="voiceIMG" alt=""></button>
         </div>
         <button id="route-btn"><img class="routeIMG" src="walk.png" alt="">경로 안내</button>
     </div>
 
-    <datalist id="cities">
-        <option value="서울">
-        <option value="부산">
-        <option value="대구">
-        <option value="인천">
-        <option value="광주">
-        <option value="대전">
-        <option value="울산">
-        <option value="세종">
-        <option value="경기">
-        <option value="강원">
-        <option value="충북">
-        <option value="충남">
-        <option value="전북">
-        <option value="전남">
-        <option value="경북">
-        <option value="경남">
-        <option value="제주">
-        <option value="천안">
-    </datalist>
-
-
     <div class="grid">
-        <div class="button" onclick="window.open('')"><img class="gridIMG" src="robot.jpg" alt=""><h3>새싹이</h3></div>
+        <div class="button" onclick="window.open('')">
+            <div id="robot-container">
+                <img id="robot-image" src="robot.jpg" alt="">
+            </div>
+            <h3>새싹이<div class="speech-bubble" id="speech-bubble"></div></h3>
+        </div>
         <div class="button" onclick="window.open('bus_info.html')"><img class="gridIMG" src="bus_stop.png" alt=""><h3>버스정류장</h3></div>
         <div class="button" onclick="window.open('callmap_option.html')"><img class="gridIMG" src="options_setting.png" alt=""><h3>설정</h3></div>
     </div>
+
+    <div class="alert-container" id="alert-container">
+        <p>위치 정보를 허용해야 합니다.</p>
+        <button id="retry-location-btn">위치 정보 다시 요청</button>
+    </div>
+
+    <button id="audio-button" class="audio-button">오디오 재생</button>
+
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const startInput = document.getElementById('start');
-            const endInput = document.getElementById('end');
-            const cities = ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주", "천안"];
-            
-            const userLatitude = 36.8242; //위도
-            const userLongitude = 127.1689; //경도
-
-            function setDefaultCity(latitude, longitude) {
-                const distanceToCheonan = calculateDistance(latitude, longitude, userLatitude, userLongitude);
-                if (distanceToCheonan < 5) { // 5km 이내라면 천안으로 설정
-                    startInput.value = "천안";
-                }
+        function startRecognition(inputElement) {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('웹 브라우저가 음성 인식을 지원하지 않습니다.');
+                return;
             }
 
-            function calculateDistance(lat1, lon1, lat2, lon2) {
-                const R = 6371; // 지구의 반경 (km)
-                const dLat = (lat2 - lat1) * (Math.PI / 180);
-                const dLon = (lon2 - lon1) * (Math.PI / 180);
-                const a = 
-                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                const distance = R * c; // 거리 (km)
-                return distance;
-            }
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'ko-KR';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
 
+            recognition.onresult = function(event) {
+                const speechResult = event.results[0][0].transcript;
+                inputElement.value = speechResult;
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error detected: ' + event.error);
+            };
+
+            recognition.onend = function() {
+                console.log('Speech recognition service disconnected');
+            };
+
+            recognition.start();
+        }
+
+        function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    setDefaultCity(latitude, longitude);
-                });
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-                setDefaultCity(userLatitude, userLongitude); // Geolocation이 지원되지 않을 때 기본 값 사용
-            }
-
-            function startRecognition(inputElement) {
-                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.lang = 'ko-KR';
-
-                recognition.onresult = (event) => {
-                    const city = event.results[0][0].transcript;
-                    if (cities.includes(city)) {
-                        inputElement.value = city;
-                    } else {
-                        alert('인식된 도시가 목록에 없습니다.');
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        startInput.value = '백석대학교';
+                        document.getElementById('alert-container').style.display = 'none';
+                    },
+                    function(error) {
+                        startInput.value = '백석대학교';
+                        document.getElementById('alert-container').style.display = 'block';
+                        console.error('Error Code = ' + error.code + ' - ' + error.message);
                     }
-                };
-
-                recognition.start();
+                );
+            } else {
+                alert('이 브라우저는 위치 정보를 지원하지 않습니다.');
             }
+        }
 
-            document.getElementById('start-voice').addEventListener('click', () => startRecognition(startInput));
-            document.getElementById('end-voice').addEventListener('click', () => startRecognition(endInput));
+        const startInput = document.getElementById('start');
+        const endInput = document.getElementById('end');
 
-            document.getElementById('route-btn').addEventListener('click', () => {
-                const start = startInput.value;
-                const end = endInput.value;
+        document.getElementById('start-voice').addEventListener('click', () => startRecognition(startInput));
+        document.getElementById('end-voice').addEventListener('click', () => startRecognition(endInput));
 
-                window.location.href = `CMaproute.html?start=${start}&end=${end}`;
-            });
+        document.getElementById('route-btn').addEventListener('click', () => {
+            const start = startInput.value;
+            const end = endInput.value;
+            window.location.href = `CMaproute.html?start=${start}&end=${end}`;
+            getLocation(); // 위치 정보 재요청
         });
+
+        document.getElementById('retry-location-btn').addEventListener('click', getLocation);
+
+        window.onload = function() {
+            getLocation();
+
+            const audio = new Audio('index.mp3');
+            document.getElementById('audio-button').addEventListener('click', () => audio.play());
+        }
+
+        /*robot container*/
+        const speechBubble = document.getElementById('speech-bubble');
+        const sentences = [
+            '',
+            '안녕하세요!',
+            '"길찾기"를 누르고',
+            '가고 싶으신 곳을 말씀해주세요',
+            '"버스정보"라고 말씀 하시면',
+            '버스정보를 알려드릴게요',
+            '콜맵의 설정을 원하시나요?',
+        ];
+
+        let index = 0;
+
+        setInterval(() => {
+            speechBubble.classList.remove('show');
+            setTimeout(() => {
+                index = (index + 1) % sentences.length;
+                speechBubble.innerText = sentences[index];
+                speechBubble.classList.add('show');
+            }, 500);
+        }, 2500);
     </script>
 </body>
 </html>

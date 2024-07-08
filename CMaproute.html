@@ -69,6 +69,114 @@
             padding-left: 10px;
             padding-bottom: 10px;
         }
+
+        .additional-box {
+            width: 40%;
+            height: 30%;
+            border-radius: 15px;
+            background-color: dodgerblue;
+            margin: 0 auto;
+            height: 50px;
+            background-color: lightgray;
+        }
+
+        .grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .button {
+            border: 0px solid;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            background-color: dodgerblue;
+            font-weight: bold;
+            font-size: 1rem;
+            width: auto;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        /* robot container */
+        #robot-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #robot-image {
+            width: 75px;
+            height: 75px;
+            margin-top: 10px;
+            border: 0px solid;
+            border-radius: 15px;
+        }
+
+        .speech-bubble {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 11.5px;
+            padding: 10px;
+            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.9);
+            max-width: 200px;
+            margin-top: 100%;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .show {
+            visibility: visible;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .alert-container {
+            display: none;
+            margin-top: 20px;
+            border: 0px solid;
+            border-radius: 15px;
+            background-color: #ffcccb;
+            font-weight: bold;
+            font-size: 1rem;
+            width: auto;
+            padding: 20px;
+        }
+
+        .alert-container button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+            background-color: dodgerblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .audio-button {
+            border-radius: 15px;
+            background-color: dodgerblue;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
     </style>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k30kvdvltu"></script>
 </head>
@@ -81,14 +189,24 @@
         <button class="route-button" onclick="openRoute()">지하철</button>
 
         <h3 class="group">백석대학교 => 천안역</h3>
+        <button id="audio-button" class="audio-button">오디오 재생</button>
+    </div>
+    <div class="grid">
+        <div class="button" onclick="window.open('')">
+            <div id="robot-container">
+                <img id="robot-image" src="robot.jpg" alt="">
+                <div class="speech-bubble" id="speech-bubble"></div>
+            </div>
+            <h3>새싹이</h3>
+        </div>
     </div>
     <div class="info-group">
         <img src="taxi.png" style="width: 30%; height: 30%; margin-top: 15px; padding-left: 15px; padding-right: 15px;" alt="">
         <p id="taxi-info"></p>
     </div>
     <script>
-        const startLatLng = { lat: 36.8242, lng: 127.1689 }; // 백석대학교
-        const endLatLng = { lat: 36.8108, lng: 127.1470 }; // 천안역
+        const startLatLng = { lat: 36.8242, lng: 127.1689 }; 
+        const endLatLng = { lat: 36.8108, lng: 127.1470 }; 
         let map;
         let startMarker, endMarker;
 
@@ -113,10 +231,17 @@
             calculateTaxiFare();
         });
 
+        window.onload = function() {
+            getLocation();
+
+            const audio = new Audio('Cmaproute.mp3');
+            document.getElementById('audio-button').addEventListener('click', () => audio.play());
+        }
+
         function calculateTaxiFare() {
             const distance = getDistanceFromLatLonInKm(startLatLng.lat, startLatLng.lng, endLatLng.lat, endLatLng.lng);
-            const baseFare = 3800; // 기본 요금 (미터 당 요금은 지역에 따라 다를 수 있음)
-            const perKmFare = 100; // 킬로미터 당 요금 (예시 값)
+            const baseFare = 3800; 
+            const perKmFare = 100; 
 
             const fare = baseFare + (distance * perKmFare);
             const taxiInfo = `거리: ${distance.toFixed(2)} km, 예상 택시 요금: ${fare.toFixed(0)} 원`;
@@ -148,6 +273,27 @@
 
             window.open(directionsUrl, '_blank');
         }
+
+        const speechBubble = document.getElementById('speech-bubble');
+        const sentences = [
+            '',
+            '안녕하세요!',
+            '목적지 까지 가고 싶은 방법을',
+            '말씀해 주세요!',
+            '택시 비용은',
+            '4천원이 나오네요!',
+        ];
+
+        let index = 0;
+
+        setInterval(() => {
+            speechBubble.classList.remove('show');
+            setTimeout(() => {
+                index = (index + 1) % sentences.length;
+                speechBubble.innerText = sentences[index];
+                speechBubble.classList.add('show');
+            }, 500);
+        }, 2500);
     </script>
 </body>
 </html>
